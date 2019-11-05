@@ -3,54 +3,100 @@ Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
 
+
+s = Stack()
+v = set()
+info = []
+counter = 0
 class Graph:
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
     def __init__(self):
         self.vertices = {}
     def add_vertex(self, vertex):
-        """
-        Add a vertex to the graph.
-        """
-        pass  # TODO
+        self.vertices[vertex] = set()
     def add_edge(self, v1, v2):
-        """
-        Add a directed edge to the graph.
-        """
-        pass  # TODO
+        if v1 in self.vertices:
+            if v2 in self.vertices:
+                self.vertices[v1].add(v2)
+            else:
+                raise IndexError("v2 not in graph")
+        else:
+            raise IndexError("v1 not in graph")
     def bft(self, starting_vertex):
-        """
-        Print each vertex in breadth-first order
-        beginning from starting_vertex.
-        """
-        pass  # TODO
+        visited = set()
+        q = Queue()
+        q.enqueue(starting_vertex)
+        info = []
+        while q.size() > 0:
+            t = q.dequeue()
+            if t not in visited:
+                info.append(t)
+                visited.add(t)
+                for n in self.vertices[t]:
+                    q.enqueue(n)
+        print("BFT", info)
     def dft(self, starting_vertex):
-        """
-        Print each vertex in depth-first order
-        beginning from starting_vertex.
-        """
-        pass  # TODO
-    def dft_recursive(self, starting_vertex):
-        """
-        Print each vertex in depth-first order
-        beginning from starting_vertex.
-        This should be done using recursion.
-        """
-        pass  # TODO
+        s = Stack()
+        s.push(starting_vertex)
+        visited = set()
+        info = []
+        while s.size() > 0:
+            v = s.pop()
+            if v not in visited:
+                info.append(v)
+                visited.add(v)
+                for neighbor in self.vertices[v]:
+                    s.push(neighbor)
+        print("DFT", info)
+    def dft_recursive(self, starting_vertex, l=[]):
+        #global s
+        #global v
+        #global info
+        #s.push(starting_vertex)
+        #while s.size() > 0:
+        #    p = s.pop()
+        #    if p not in v:
+        #        info.append(p)
+        #        v.add(p)
+        #        for n in self.vertices[p]:
+        #            self.dft_recursive(n)
+        #print("DFT-R", info)
+        l+= [starting_vertex]
+        for n in self.vertices[starting_vertex]:
+            if n not in l:
+                l = self.dft_recursive(n, l)
+        return l
     def bfs(self, starting_vertex, destination_vertex):
-        """
-        Return a list containing the shortest path from
-        starting_vertex to destination_vertex in
-        breath-first order.
-        """
-        pass  # TODO
-    def dfs(self, starting_vertex, destination_vertex):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
-        """
-        pass  # TODO
+        q = Queue()
+        v = set()
+        q.enqueue([starting_vertex])
+        while q.size() > 0:
+            i = q.dequeue()
+            last = i[-1]
+            if last not in v:
+                v.add(last)
+                if last == destination_vertex:
+                    return i, 'path found! BFS'
+                else:
+                    for n in self.vertices[last]:
+                        new = i + [n]
+                        q.enqueue(new)
 
+    def dfs(self, starting_vertex, destination_vertex):
+        s = Stack()
+        v = set()
+        s.push([starting_vertex])
+        while s.size() > 0:
+            i = s.pop()
+            last = i[-1]
+            if last not in v:
+                v.add(last)
+                if last == destination_vertex:
+                    return i, 'path found! DFS'
+                else:
+                    for n in self.vertices[last]:
+                        new = i + [n]
+                        s.push(new)
 
 
 
